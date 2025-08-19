@@ -18,11 +18,15 @@ const DeleteArticleModal = ({ isOpen, onClose, onArticleDeleted, article, catego
       const data = await response.json();
 
       if (data.success) {
-        setSuccess('Artículo eliminado exitosamente');
+        const successMessage = data.data?.movimientos_eliminados > 0
+          ? `✅ Artículo eliminado exitosamente junto con ${data.data.movimientos_eliminados} movimientos del historial`
+          : '✅ Artículo eliminado exitosamente';
+        
+        setSuccess(successMessage);
         setTimeout(() => {
           onArticleDeleted();
           onClose();
-        }, 1500);
+        }, 2000);
       } else {
         // Mostrar el mensaje de error del backend (ya es amigable)
         setError(data.message || 'Error al eliminar el artículo');
@@ -58,12 +62,24 @@ const DeleteArticleModal = ({ isOpen, onClose, onArticleDeleted, article, catego
 
           {/* Título y mensaje */}
           <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-            ¿Eliminar artículo?
+            ⚠️ Eliminación Permanente
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            ¿Estás seguro de que quieres eliminar el artículo <strong>"{article.nombre}"</strong> de la categoría <strong>"{categoryName}"</strong>?
-            Esta acción no se puede deshacer.
-          </p>
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
+            <div className="text-center">
+              <p className="text-sm text-red-700 dark:text-red-300 mb-2 font-medium">
+                🚨 <strong>ATENCIÓN:</strong> Esta acción eliminará completamente:
+              </p>
+              <ul className="text-sm text-red-600 dark:text-red-400 text-left space-y-1">
+                <li>• El artículo <strong>"{article.nombre}"</strong></li>
+                <li>• <strong>TODOS</strong> los movimientos registrados (entradas/salidas)</li>
+                <li>• <strong>TODA</strong> la información del historial</li>
+                <li>• La relación con la categoría <strong>"{categoryName}"</strong></li>
+              </ul>
+              <p className="text-sm text-red-700 dark:text-red-300 mt-3 font-semibold">
+                ⚡ Esta acción es <strong>IRREVERSIBLE</strong> y no se puede deshacer.
+              </p>
+            </div>
+          </div>
 
           {/* Información del artículo */}
           <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-6">
@@ -113,9 +129,9 @@ const DeleteArticleModal = ({ isOpen, onClose, onArticleDeleted, article, catego
               type="button"
               onClick={handleDelete}
               disabled={loading}
-              className="flex-1 px-4 py-3 bg-red-500 hover:bg-red-600 disabled:bg-red-400 text-white rounded-lg transition-colors disabled:opacity-50"
+              className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white rounded-lg transition-all duration-200 disabled:opacity-50 font-semibold shadow-lg hover:shadow-xl"
             >
-              {loading ? 'Eliminando...' : 'Eliminar Artículo'}
+              {loading ? '🗑️ Eliminando...' : '🗑️ ELIMINAR PERMANENTEMENTE'}
             </button>
           </div>
         </div>
