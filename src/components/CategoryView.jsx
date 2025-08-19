@@ -27,11 +27,9 @@ const CategoryView = () => {
   // Función para obtener datos de categoría del backend
   const fetchCategoryData = async (categorySlug) => {
     try {
-      console.log('Fetching category data for slug:', categorySlug);
       // Primero obtener todas las categorías del backend
       const response = await fetch('http://localhost:8081/category');
       const data = await response.json();
-      console.log('Categories response:', data);
       
       if (data.success) {
         // Buscar la categoría que coincida con el slug
@@ -39,8 +37,6 @@ const CategoryView = () => {
           const catSlug = cat.nombre.toLowerCase().replace(/\s+/g, '-');
           return catSlug === categorySlug;
         });
-        
-        console.log('Found category:', foundCategory);
         
         if (foundCategory) {
           // Crear objeto de categoría con datos del backend
@@ -52,7 +48,6 @@ const CategoryView = () => {
             total_articulos: foundCategory.total_articulos || 0
           };
           
-          console.log('Setting category object:', categoryObj);
           setCategory(categoryObj);
           await fetchArticles(foundCategory.id_categoria);
         } else {
@@ -167,32 +162,16 @@ const CategoryView = () => {
 
   const fetchArticles = async (categoryId) => {
     try {
-      console.log('🔄 fetchArticles llamado con categoryId:', categoryId);
-      console.log('🌐 URL de la petición:', `http://localhost:8081/article/categoria/${categoryId}`);
-      
       const response = await fetch(`http://localhost:8081/article/categoria/${categoryId}`);
       const data = await response.json();
-      console.log('📊 Articles response data:', data);
       
       if (data.success) {
-        console.log('✅ Artículos obtenidos exitosamente');
-        console.log('📦 Artículos antes de setArticles:', articles);
         setArticles(data.data);
-        console.log('📦 Artículos después de setArticles:', data.data);
-        
-        // Verificar si el stock se actualizó
-        if (data.data.length > 0) {
-          console.log('🔍 Verificando stock de artículos:');
-          data.data.forEach(article => {
-            console.log(`  - ${article.nombre}: Stock = ${article.stock}`);
-          });
-        }
       } else {
-        console.log('❌ No articles found or error:', data.message);
         setArticles([]);
       }
     } catch (error) {
-      console.error('❌ Error fetching articles:', error);
+      console.error('Error fetching articles:', error);
       setArticles([]);
     }
   };
@@ -202,19 +181,15 @@ const CategoryView = () => {
   };
 
   const handleArticleCreated = () => {
-    console.log('Article created, refreshing articles for category:', category.id);
     fetchArticles(category.id);
     // También actualizar el conteo en el dashboard
     window.dispatchEvent(new CustomEvent('refreshCategories'));
   };
 
   const handleCategoryUpdated = () => {
-    console.log('Category updated, refreshing data...');
-    console.log('Current categorySlug:', categorySlug);
     // Recargar datos de la categoría
     fetchCategoryData(categorySlug);
     // También actualizar el panel izquierdo del dashboard
-    console.log('Dispatching refreshCategories event...');
     window.dispatchEvent(new CustomEvent('refreshCategories'));
   };
 
@@ -246,16 +221,10 @@ const CategoryView = () => {
   };
 
   const handleMovementCreated = () => {
-    console.log('🔄 handleMovementCreated llamado');
-    console.log('📁 Categoría ID:', category.id);
-    console.log('📁 Categoría objeto:', category);
-    
     // Recargar artículos para actualizar el stock
-    console.log('🔄 Recargando artículos...');
     fetchArticles(category.id);
     
     // También actualizar el conteo en el dashboard
-    console.log('🔄 Disparando evento refreshCategories...');
     window.dispatchEvent(new CustomEvent('refreshCategories'));
   };
 
@@ -325,20 +294,20 @@ const CategoryView = () => {
             
             {/* Botones de acción para la categoría */}
             <div className="flex space-x-3">
-                             <button
-                 onClick={() => setIsEditModalOpen(true)}
-                 className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200 p-3 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-700"
-                 title="Editar categoría"
-               >
+                                             <button
+                  onClick={() => setIsEditModalOpen(true)}
+                  className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200 p-3 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-700 cursor-pointer"
+                  title="Editar categoría"
+                >
                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                  </svg>
                </button>
-               <button
-                 onClick={() => setIsDeleteModalOpen(true)}
-                 className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors duration-200 p-3 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg border border-red-200 dark:border-red-700"
-                 title="Eliminar categoría"
-               >
+                               <button
+                  onClick={() => setIsDeleteModalOpen(true)}
+                  className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors duration-200 p-3 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg border border-red-200 dark:border-red-700 cursor-pointer"
+                  title="Eliminar categoría"
+                >
                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                  </svg>
@@ -358,10 +327,10 @@ const CategoryView = () => {
                  Total: {filteredArticles.length} artículos
                </p>
              </div>
-             <button 
-               onClick={handleCreateArticle}
-               className="bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700 text-white px-6 py-3 rounded-lg transition-all duration-300 hover:shadow-lg flex items-center space-x-2"
-             >
+                           <button 
+                onClick={handleCreateArticle}
+                className="bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700 text-white px-6 py-3 rounded-lg transition-all duration-300 hover:shadow-lg flex items-center space-x-2 cursor-pointer"
+              >
                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                </svg>
@@ -385,10 +354,10 @@ const CategoryView = () => {
                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                />
                {searchTerm && (
-                 <button
-                   onClick={() => setSearchTerm('')}
-                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                 >
+                                 <button
+                  onClick={() => setSearchTerm('')}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
+                >
                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                    </svg>
@@ -475,38 +444,38 @@ const CategoryView = () => {
                       </td>
                                              <td className="px-6 py-4">
                          <div className="flex items-center justify-center space-x-2">
-                           <button 
-                             onClick={() => handleOpenMovement(article)}
-                             className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors duration-200 p-2 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg"
-                             title="Registrar movimiento"
-                           >
+                                                       <button 
+                              onClick={() => handleOpenMovement(article)}
+                              className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors duration-200 p-2 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg cursor-pointer"
+                              title="Registrar movimiento"
+                            >
                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                              </svg>
                            </button>
-                           <button 
-                             onClick={() => handleOpenMovementHistory(article)}
-                             className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors duration-200 p-2 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-lg"
-                             title="Ver historial de movimientos"
-                           >
+                                                       <button 
+                              onClick={() => handleOpenMovementHistory(article)}
+                              className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors duration-200 p-2 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-lg cursor-pointer"
+                              title="Ver historial de movimientos"
+                            >
                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                              </svg>
                            </button>
-                           <button 
-                             onClick={() => handleEditArticle(article)}
-                             className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200 p-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg"
-                             title="Editar artículo"
-                           >
+                                                       <button 
+                              onClick={() => handleEditArticle(article)}
+                              className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200 p-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg cursor-pointer"
+                              title="Editar artículo"
+                            >
                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                              </svg>
                            </button>
-                           <button 
-                             onClick={() => handleDeleteArticle(article)}
-                             className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors duration-200 p-2 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg"
-                             title="Eliminar artículo"
-                           >
+                                                       <button 
+                              onClick={() => handleDeleteArticle(article)}
+                              className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors duration-200 p-2 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg cursor-pointer"
+                              title="Eliminar artículo"
+                            >
                              <svg className="w-5 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1 1v3M4 7h16" />
                              </svg>
