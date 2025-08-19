@@ -11,7 +11,7 @@ const DeleteCategoryModal = ({ isOpen, onClose, onCategoryDeleted, category }) =
     setSuccess('');
 
     try {
-      const response = await fetch(`http://localhost:8081/category/${category.id}`, {
+      const response = await fetch(`http://localhost:8081/api/category/${category.id}`, {
         method: 'DELETE',
       });
 
