@@ -26,7 +26,7 @@ const CreateCategoryModal = ({ isOpen, onClose, onCategoryCreated }) => {
     setSuccess('');
 
     try {
-      const response = await fetch('http://localhost:8081/category', {
+      const response = await fetch('http://localhost:8081/api/category', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

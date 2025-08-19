@@ -28,7 +28,7 @@ const CategoryView = () => {
   const fetchCategoryData = async (categorySlug) => {
     try {
       // Primero obtener todas las categorías del backend
-      const response = await fetch('http://localhost:8081/category');
+      const response = await fetch('http://localhost:8081/api/category');
       const data = await response.json();
       
       if (data.success) {
@@ -162,7 +162,7 @@ const CategoryView = () => {
 
   const fetchArticles = async (categoryId) => {
     try {
-      const response = await fetch(`http://localhost:8081/article/categoria/${categoryId}`);
+      const response = await fetch(`http://localhost:8081/api/article/categoria/${categoryId}`);
       const data = await response.json();
       
       if (data.success) {

@@ -35,7 +35,7 @@ const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, cat
     setSuccess('');
 
     try {
-      const response = await fetch('http://localhost:8081/article', {
+      const response = await fetch('http://localhost:8081/api/article', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -18,11 +18,12 @@ const MovementHistoryModal = ({ isOpen, onClose, article, categoryName }) => {
     setError('');
 
     try {
-      const response = await fetch(`http://localhost:8081/movement/articulo/${article.id_articulo}`);
+      const response = await fetch(`http://localhost:8081/api/movement/articulo/${article.id_articulo}`);
       const data = await response.json();
 
       if (data.success) {
-        setMovements(data.data.movimientos);
+        // El backend devuelve data.data directamente, no data.data.movimientos
+        setMovements(data.data);
       } else {
         setError(data.message || 'Error al cargar el historial');
       }

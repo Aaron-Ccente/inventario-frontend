@@ -68,7 +68,7 @@ const MovementModal = ({ isOpen, onClose, onMovementCreated, article, categoryNa
     setSuccess('');
 
     try {
-      const response = await fetch('http://localhost:8081/movement', {
+      const response = await fetch('http://localhost:8081/api/movement', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

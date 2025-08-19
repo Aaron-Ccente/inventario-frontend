@@ -37,7 +37,7 @@ const EditCategoryModal = ({ isOpen, onClose, onCategoryUpdated, category }) => 
     setSuccess('');
 
     try {
-      const response = await fetch(`http://localhost:8081/category/${category.id}`, {
+      const response = await fetch(`http://localhost:8081/api/category/${category.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
