@@ -11,7 +11,7 @@ const DeleteArticleModal = ({ isOpen, onClose, onArticleDeleted, article, catego
     setSuccess('');
 
     try {
-      const response = await fetch(`http://localhost:8081/article/${article.id_articulo}`, {
+      const response = await fetch(`http://localhost:8081/api/article/${article.id_articulo}`, {
         method: 'DELETE',
       });
 
