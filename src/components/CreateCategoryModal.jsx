@@ -8,7 +8,6 @@ const CreateCategoryModal = ({ isOpen, onClose, onCategoryCreated }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Iconos disponibles para categorías
   const availableIcons = [
     '🔧', '📦', '💻', '🧪', '🚗', '🔫', '📻', '🛡️', '🏥', '👕', '🍽️', '🚚', '🏗️', '⚡', '🌱', '🧹', '📋', '🔨', '📱', '💡', '🔋', '📷', '🎧', '⌨️', '🖱️', '🖨️', '📺', '🎥', '🔍', '📊', '💾'
   ];
@@ -50,7 +49,6 @@ const CreateCategoryModal = ({ isOpen, onClose, onCategoryCreated }) => {
           onClose();
         }, 1500);
       } else {
-        // Mostrar el mensaje de error del backend (ya es amigable)
         setError(data.message || 'Error al crear la categoría');
       }
     } catch (err) {
