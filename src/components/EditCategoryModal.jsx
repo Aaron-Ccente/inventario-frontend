@@ -58,6 +58,7 @@ const EditCategoryModal = ({ isOpen, onClose, onCategoryUpdated, category }) => 
         setError(data.message || 'Error al actualizar la categoría');
       }
     } catch (err) {
+      console.log(err)
       setError('Error de conexión. Verifica tu conexión a internet e inténtalo de nuevo.');
     } finally {
       setLoading(false);
