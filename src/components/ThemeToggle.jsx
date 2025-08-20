@@ -10,7 +10,6 @@ const ThemeToggle = () => {
       title={isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
     >
       {isDarkMode ? (
-        // Sol - Modo oscuro activo
         <svg
           className="w-6 h-6 text-yellow-400"
           fill="currentColor"
@@ -23,7 +22,6 @@ const ThemeToggle = () => {
           />
         </svg>
       ) : (
-        // Luna - Modo claro activo
         <svg
           className="w-6 h-6 text-gray-700"
           fill="currentColor"
