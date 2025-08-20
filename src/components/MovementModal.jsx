@@ -12,7 +12,6 @@ const MovementModal = ({ isOpen, onClose, onMovementCreated, article, categoryNa
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Resetear formulario cuando se abre el modal
   useEffect(() => {
     if (isOpen && article) {
       setFormData({
@@ -34,7 +33,6 @@ const MovementModal = ({ isOpen, onClose, onMovementCreated, article, categoryNa
       [name]: value
     }));
 
-    // Si cambia la acción, limpiar costo unitario para salidas
     if (name === 'accion' && value === 'SALIDA') {
       setFormData(prev => ({
         ...prev,
@@ -47,7 +45,6 @@ const MovementModal = ({ isOpen, onClose, onMovementCreated, article, categoryNa
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validaciones
     if (!formData.cantidad || parseFloat(formData.cantidad) <= 0) {
       setError('La cantidad debe ser mayor a 0');
       return;
@@ -68,7 +65,7 @@ const MovementModal = ({ isOpen, onClose, onMovementCreated, article, categoryNa
     setSuccess('');
 
     try {
-      const response = await fetch('http://localhost:8081/api/movement', {
+        const response = await fetch('http://localhost:8081/api/movement', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

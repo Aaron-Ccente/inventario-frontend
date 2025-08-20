@@ -14,7 +14,6 @@ const EditArticleModal = ({ isOpen, onClose, onArticleUpdated, article, category
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Cargar datos del artículo cuando se abre el modal
   useEffect(() => {
     if (article && isOpen) {
       setFormData({
@@ -52,20 +51,22 @@ const EditArticleModal = ({ isOpen, onClose, onArticleUpdated, article, category
     setSuccess('');
 
     try {
+      const articleData = {
+        codigo: formData.codigo.trim(),
+        nombre: formData.nombre.trim(),
+        unidad: formData.unidad.trim(),
+        detalle: formData.detalle.trim(),
+        fecha_vencimiento: formData.fecha_vencimiento && formData.fecha_vencimiento.trim() !== '' ? formData.fecha_vencimiento : null,
+        otros: formData.otros.trim(),
+        stock: parseFloat(formData.stock) || 0
+      };
+      
       const response = await fetch(`http://localhost:8081/api/article/${article.id_articulo}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          codigo: formData.codigo.trim(),
-          nombre: formData.nombre.trim(),
-          unidad: formData.unidad.trim(),
-          detalle: formData.detalle.trim(),
-          fecha_vencimiento: formData.fecha_vencimiento || null,
-          otros: formData.otros.trim(),
-          stock: parseFloat(formData.stock) || 0
-        }),
+        body: JSON.stringify(articleData),
       });
 
       const data = await response.json();
@@ -77,7 +78,6 @@ const EditArticleModal = ({ isOpen, onClose, onArticleUpdated, article, category
           onClose();
         }, 1000);
       } else {
-        // Mostrar el mensaje de error del backend (ya es amigable)
         setError(data.message || 'Error al actualizar el artículo');
       }
     } catch (err) {

@@ -24,7 +24,6 @@ const DeleteCategoryModal = ({ isOpen, onClose, onCategoryDeleted, category }) =
           onClose();
         }, 1500);
       } else {
-        // Mostrar el mensaje de error del backend (ya es amigable)
         setError(data.message || 'Error al eliminar la categoría');
       }
     } catch (err) {

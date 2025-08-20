@@ -1,4 +1,4 @@
-import { useAuth } from '../contexts/AuthContext.jsx';
+import { useAuth } from '../hooks/useAuth.js';
 import { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle.jsx';
@@ -14,33 +14,26 @@ const Dashboard = () => {
 
     const fetchCategories = async () => {
     try {
-      console.log('Dashboard: Fetching categories...');
       const response = await fetch('http://localhost:8081/api/category');
       const data = await response.json();
-      console.log('Dashboard: Categories response:', data);
       
       if (data.success) {
-        // Transformar las categorías del backend al formato del frontend
-        const transformedCategories = data.data.map((cat, index) => {
+        const transformedCategories = data.data.map((cat) => {
           const transformed = {
             id: cat.id_categoria,
             name: cat.nombre,
-            icon: cat.icono || getCategoryIcon(cat.nombre), // Usar icono del backend o fallback
-            count: cat.total_articulos || 0, // Usar el conteo real del backend
+            icon: cat.icono || getCategoryIcon(cat.nombre),
+            count: cat.total_articulos || 0,
             slug: cat.nombre.toLowerCase().replace(/\s+/g, '-')
           };
-          console.log(`Dashboard: Transformed category ${cat.nombre}:`, transformed);
           return transformed;
         });
-        console.log('Dashboard: All transformed categories:', transformedCategories);
         setCategories(transformedCategories);
       } else {
-        // Si hay error, usar categorías por defecto
-        console.log('Dashboard: Error in response, using default categories');
         setDefaultCategories();
       }
     } catch (error) {
-      console.error('Dashboard: Error fetching categories:', error);
+      console.log(error)
       setDefaultCategories();
     } finally {
       setLoading(false);
@@ -86,17 +79,13 @@ const Dashboard = () => {
       }
     }
     
-    // Icono por defecto
     return '📋';
   };
 
   useEffect(() => {
     fetchCategories();
-    
-    // Escuchar evento para refrescar categorías cuando se crean/editan/eliminan artículos
+
     const handleRefreshCategories = () => {
-      console.log('Dashboard received refreshCategories event');
-      console.log('Current categories state:', categories);
       fetchCategories();
     };
     
@@ -124,7 +113,7 @@ const Dashboard = () => {
   };
 
   const handleCategoryCreated = () => {
-    fetchCategories(); // Recargar categorías después de crear una nueva
+    fetchCategories();
   };
 
   if (loading) {
@@ -140,7 +129,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow-lg border-b border-gray-200 dark:border-gray-700">
         <div className="w-full px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
@@ -166,7 +154,6 @@ const Dashboard = () => {
       </header>
 
       <div className="flex h-full">
-        {/* Sidebar - Panel de Categorías */}
         <aside className="w-80 bg-white dark:bg-gray-800 shadow-xl min-h-screen flex-shrink-0">
           <div className="p-8">
             <div className="flex justify-between items-center mb-8">
@@ -225,7 +212,6 @@ const Dashboard = () => {
               ))}
             </nav>
 
-            {/* Estadísticas rápidas */}
             <div className="mt-10 pt-8 border-t border-gray-200 dark:border-gray-700">
               <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-6">
                 Resumen
@@ -248,13 +234,11 @@ const Dashboard = () => {
           </div>
         </aside>
 
-        {/* Área Principal con Outlet */}
         <main className="flex-1 min-w-0">
           <Outlet />
         </main>
       </div>
 
-      {/* Modal para crear categorías */}
       <CreateCategoryModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

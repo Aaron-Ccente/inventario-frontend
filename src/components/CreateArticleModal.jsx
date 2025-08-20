@@ -35,22 +35,27 @@ const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, cat
     setSuccess('');
 
     try {
+      const articleData = {
+        ...formData,
+        id_categoria: categoryId
+      };
+      
+      if (!articleData.fecha_vencimiento || articleData.fecha_vencimiento.trim() === '') {
+        articleData.fecha_vencimiento = null;
+      }
+      
       const response = await fetch('http://localhost:8081/api/article', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          id_categoria: categoryId
-        }),
+        body: JSON.stringify(articleData),
       });
 
       const data = await response.json();
 
       if (data.success) {
-        setSuccess(`Artículo creado exitosamente con ID: ${data.id}`);
-        console.log('Article created successfully:', data);
+        setSuccess(`Artículo creado exitosamente.`);
         setFormData({
           codigo: '',
           nombre: '',
@@ -61,17 +66,15 @@ const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, cat
           stock: 0
         });
         setTimeout(() => {
-          console.log('Calling onArticleCreated callback');
+          setSuccess('');
           onArticleCreated();
           onClose();
         }, 1000);
       } else {
-        // Mostrar el mensaje de error del backend (ya es amigable)
         setError(data.message || 'Error al crear el artículo');
-        console.error('Error creating article:', data);
       }
     } catch (err) {
-      console.error('Network error:', err);
+      console.log(err)
       setError('Error de conexión. Verifica tu conexión a internet e inténtalo de nuevo.');
     } finally {
       setLoading(false);
@@ -117,7 +120,6 @@ const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, cat
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Código */}
             <div>
               <label htmlFor="codigo" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Código *
@@ -135,7 +137,6 @@ const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, cat
               />
             </div>
 
-            {/* Nombre */}
             <div>
               <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Nombre *
@@ -153,7 +154,6 @@ const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, cat
               />
             </div>
 
-            {/* Unidad */}
             <div>
               <label htmlFor="unidad" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Unidad *
@@ -171,7 +171,6 @@ const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, cat
               />
             </div>
 
-            {/* Stock */}
             <div>
               <label htmlFor="stock" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Stock Inicial
@@ -190,7 +189,6 @@ const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, cat
               />
             </div>
 
-            {/* Fecha de Vencimiento */}
             <div>
               <label htmlFor="fecha_vencimiento" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Fecha de Vencimiento
@@ -206,7 +204,6 @@ const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, cat
               />
             </div>
 
-            {/* Otros */}
             <div>
               <label htmlFor="otros" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Otros
@@ -224,7 +221,6 @@ const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, cat
             </div>
           </div>
 
-          {/* Detalle */}
           <div>
             <label htmlFor="detalle" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Detalle

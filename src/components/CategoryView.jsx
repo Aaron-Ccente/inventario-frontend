@@ -24,22 +24,18 @@ const CategoryView = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredArticles, setFilteredArticles] = useState([]);
 
-  // Función para obtener datos de categoría del backend
   const fetchCategoryData = async (categorySlug) => {
     try {
-      // Primero obtener todas las categorías del backend
       const response = await fetch('http://localhost:8081/api/category');
       const data = await response.json();
       
       if (data.success) {
-        // Buscar la categoría que coincida con el slug
         const foundCategory = data.data.find(cat => {
           const catSlug = cat.nombre.toLowerCase().replace(/\s+/g, '-');
           return catSlug === categorySlug;
         });
         
         if (foundCategory) {
-          // Crear objeto de categoría con datos del backend
           const categoryObj = {
             id: foundCategory.id_categoria,
             name: foundCategory.nombre,
@@ -64,7 +60,6 @@ const CategoryView = () => {
     }
   };
 
-  // Función para generar descripción automática basada en el nombre
   const generateDescription = (categoryName) => {
     const descriptions = {
       'herramientas': 'Gestión de herramientas y equipos manuales',
@@ -89,12 +84,10 @@ const CategoryView = () => {
       'oficina': 'Suministros y equipos de oficina'
     };
     
-    // Buscar descripción exacta
     if (descriptions[categoryName.toLowerCase()]) {
       return descriptions[categoryName.toLowerCase()];
     }
     
-    // Generar descripción automática basada en palabras clave
     const lowerName = categoryName.toLowerCase();
     
     if (lowerName.includes('líquido') || lowerName.includes('liquido')) {
@@ -128,7 +121,6 @@ const CategoryView = () => {
       return 'Pinturas, tintes y materiales de color';
     }
     
-    // Descripción genérica para categorías no reconocidas
     return `Gestión y control de ${categoryName.toLowerCase()}`;
   };
 
@@ -136,14 +128,12 @@ const CategoryView = () => {
     fetchCategoryData(categorySlug);
   }, [categorySlug]);
 
-  // Efecto adicional para recargar artículos cuando cambie la categoría
   useEffect(() => {
     if (category) {
       fetchArticles(category.id);
     }
   }, [category]);
 
-  // Efecto para filtrar artículos cuando cambie el término de búsqueda
   useEffect(() => {
     if (articles.length > 0) {
       if (searchTerm.trim() === '') {
@@ -182,19 +172,15 @@ const CategoryView = () => {
 
   const handleArticleCreated = () => {
     fetchArticles(category.id);
-    // También actualizar el conteo en el dashboard
     window.dispatchEvent(new CustomEvent('refreshCategories'));
   };
 
   const handleCategoryUpdated = () => {
-    // Recargar datos de la categoría
     fetchCategoryData(categorySlug);
-    // También actualizar el panel izquierdo del dashboard
     window.dispatchEvent(new CustomEvent('refreshCategories'));
   };
 
   const handleCategoryDeleted = () => {
-    // Redirigir al dashboard después de eliminar
     window.location.href = '/dashboard';
   };
 
@@ -210,21 +196,17 @@ const CategoryView = () => {
 
   const handleArticleUpdated = () => {
     fetchArticles(category.id);
-    // También actualizar el conteo en el dashboard
     window.dispatchEvent(new CustomEvent('refreshCategories'));
   };
 
   const handleArticleDeleted = () => {
     fetchArticles(category.id);
-    // También actualizar el conteo en el dashboard
     window.dispatchEvent(new CustomEvent('refreshCategories'));
   };
 
   const handleMovementCreated = () => {
-    // Recargar artículos para actualizar el stock
     fetchArticles(category.id);
     
-    // También actualizar el conteo en el dashboard
     window.dispatchEvent(new CustomEvent('refreshCategories'));
   };
 

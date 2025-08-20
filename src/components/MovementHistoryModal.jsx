@@ -6,7 +6,6 @@ const MovementHistoryModal = ({ isOpen, onClose, article, categoryName }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Cargar movimientos cuando se abre el modal
   useEffect(() => {
     if (isOpen && article) {
       fetchMovements();
@@ -21,14 +20,13 @@ const MovementHistoryModal = ({ isOpen, onClose, article, categoryName }) => {
       const response = await fetch(`http://localhost:8081/api/movement/articulo/${article.id_articulo}`);
       const data = await response.json();
 
-      if (data.success) {
-        // El backend devuelve data.data directamente, no data.data.movimientos
-        setMovements(data.data);
+              if (data.success) {
+          setMovements(data.data);
       } else {
         setError(data.message || 'Error al cargar el historial');
       }
     } catch (err) {
-      console.error('Error fetching movements:', err);
+      console.log(err)
       setError('Error de conexión. Verifica tu conexión a internet e inténtalo de nuevo.');
     } finally {
       setLoading(false);
@@ -144,28 +142,17 @@ const MovementHistoryModal = ({ isOpen, onClose, article, categoryName }) => {
        currentX += colWidths[4];
        doc.line(currentX, currentY - 5, currentX, currentY + lineHeight - 3);
        doc.text('Detalle', currentX + 2, currentY);
-       
-       // Borde derecho
-       doc.line(margin + totalTableWidth, currentY - 5, margin + totalTableWidth, currentY + lineHeight - 3);
-       
+       doc.line(margin + totalTableWidth, currentY - 5, margin + totalTableWidth, currentY + lineHeight - 3); 
        currentY += lineHeight + 5;
        doc.setTextColor(0, 0, 0);
-       
-       // Datos con bordes
-       movements.forEach((movement, index) => {
-         if (currentY > 270) { // Nueva página si es necesario
+       movements.forEach((movement) => {
+         if (currentY > 270) {
            doc.addPage();
            currentY = 20;
          }
-         
-         // Dibujar bordes de la fila
          doc.setDrawColor(200, 200, 200);
          doc.setLineWidth(0.2);
-         
-         // Borde superior de la fila
          doc.line(margin, currentY - 3, margin + totalTableWidth, currentY - 3);
-         
-         // Bordes verticales de la fila
          let currentX = margin;
          doc.line(currentX, currentY - 3, currentX, currentY + lineHeight - 1);
          
@@ -208,7 +195,7 @@ const MovementHistoryModal = ({ isOpen, onClose, article, categoryName }) => {
       doc.save(fileName);
       
     } catch (error) {
-      console.error('Error generando PDF:', error);
+      console.log(error)
       alert('Error al generar el PDF. Por favor, inténtalo de nuevo.');
     }
   };

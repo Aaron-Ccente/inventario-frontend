@@ -28,7 +28,6 @@ const DeleteArticleModal = ({ isOpen, onClose, onArticleDeleted, article, catego
           onClose();
         }, 2000);
       } else {
-        // Mostrar el mensaje de error del backend (ya es amigable)
         setError(data.message || 'Error al eliminar el artículo');
       }
     } catch (err) {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext.jsx';
+import { useAuth } from '../hooks/useAuth.js';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -46,7 +46,6 @@ const Register = () => {
         confirmPassword: ''
       });
       
-      // Redirigir al login después de 2 segundos
       setTimeout(() => {
         navigate('/login');
       }, 2000);
