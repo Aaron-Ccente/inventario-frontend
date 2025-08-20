@@ -8,12 +8,10 @@ const EditCategoryModal = ({ isOpen, onClose, onCategoryUpdated, category }) => 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Iconos disponibles para categorías
   const availableIcons = [
     '🔧', '📦', '💻', '🧪', '🚗', '🔫', '📻', '🛡️', '🏥', '👕', '🍽️', '🚚', '🏗️', '⚡', '🌱', '🧹', '📋', '🔨', '📱', '💡', '🔋', '📷', '🎧', '⌨️', '🖱️', '🖨️', '📺', '🎥', '🔍', '📊', '💾'
   ];
 
-  // Cargar datos de la categoría cuando se abre el modal
   useEffect(() => {
     if (category && isOpen) {
       setCategoryName(category.name || '');
@@ -37,7 +35,7 @@ const EditCategoryModal = ({ isOpen, onClose, onCategoryUpdated, category }) => 
     setSuccess('');
 
     try {
-      const response = await fetch(`http://localhost:8081/api/category/${category.id}`, {
+        const response = await fetch(`http://localhost:8081/api/category/${category.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -50,21 +48,16 @@ const EditCategoryModal = ({ isOpen, onClose, onCategoryUpdated, category }) => 
       });
 
       const data = await response.json();
-      console.log('Response from backend:', data);
-
       if (data.success) {
         setSuccess('Categoría actualizada exitosamente');
         setTimeout(() => {
-          console.log('Executing onCategoryUpdated callback');
           onCategoryUpdated();
           onClose();
         }, 2000);
       } else {
-        // Mostrar el mensaje de error del backend (ya es amigable)
         setError(data.message || 'Error al actualizar la categoría');
       }
     } catch (err) {
-      console.error('Network error:', err);
       setError('Error de conexión. Verifica tu conexión a internet e inténtalo de nuevo.');
     } finally {
       setLoading(false);
@@ -73,7 +66,6 @@ const EditCategoryModal = ({ isOpen, onClose, onCategoryUpdated, category }) => 
 
   const handleClose = () => {
     if (!loading) {
-      // Limpiar estados antes de cerrar
       setError('');
       setSuccess('');
       onClose();
