@@ -1,14 +1,6 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth debe ser usado dentro de un AuthProvider');
-  }
-  return context;
-};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -16,7 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
 
   useEffect(() => {
-    // Verificar si hay un token guardado al cargar la app
     const savedToken = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
     
@@ -27,7 +18,6 @@ export const AuthProvider = ({ children }) => {
         setUser(userData);
       } catch (error) {
         console.error('Error parsing saved user data:', error);
-        // Limpiar datos corruptos
         localStorage.removeItem('token');
         localStorage.removeItem('user');
       }
@@ -48,14 +38,12 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
 
       if (data.success) {
-        // Usar los datos reales del backend
         const userData = {
           id: data.user.id,
           name: data.user.name,
           email: data.user.email
         };
         
-        // En un caso real, el token vendría del backend
         const userToken = 'token-simulado';
         
         setUser(userData);
@@ -68,7 +56,7 @@ export const AuthProvider = ({ children }) => {
         return { success: false, message: data.message || 'Error en el login' };
       }
     } catch (error) {
-      return { success: false, message: 'Error de conexión' };
+      console.log(error)
     }
   };
 
@@ -90,7 +78,7 @@ export const AuthProvider = ({ children }) => {
         return { success: false, message: data.message || 'Error en el registro' };
       }
     } catch (error) {
-      return { success: false, message: 'Error de conexión' };
+        console.log(error)
     }
   };
 
@@ -117,3 +105,5 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+export { AuthContext };
