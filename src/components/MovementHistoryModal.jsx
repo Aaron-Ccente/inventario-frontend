@@ -70,120 +70,170 @@ const MovementHistoryModal = ({ isOpen, onClose, article, categoryName }) => {
       const pageWidth = doc.internal.pageSize.width;
       const margin = 20;
       
-      // Título principal
-      doc.setFontSize(20);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Historial de Movimientos', pageWidth / 2, 30, { align: 'center' });
-      
-      // Información del artículo
-      doc.setFontSize(14);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Información del Artículo:', margin, 50);
-      
-      doc.setFontSize(12);
-      doc.setFont('helvetica', 'normal');
-      doc.text(`Código: ${article.codigo}`, margin, 65);
-      doc.text(`Nombre: ${article.nombre}`, margin, 75);
-      doc.text(`Categoría: ${categoryName}`, margin, 85);
-      doc.text(`Stock Actual: ${article.stock}`, margin, 95);
-      doc.text(`Unidad: ${article.unidad}`, margin, 105);
-      
-      // Resumen estadístico
-      doc.setFontSize(14);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Resumen del Historial:', margin, 125);
-      
-      doc.setFontSize(12);
-      doc.setFont('helvetica', 'normal');
-      doc.text(`Total Movimientos: ${movements.length}`, margin, 140);
-      doc.text(`Entradas: ${movements.filter(m => m.accion === 'ENTRADA').length}`, margin, 150);
-      doc.text(`Salidas: ${movements.filter(m => m.accion === 'SALIDA').length}`, margin, 160);
-      doc.text(`Último Movimiento: ${movements.length > 0 ? formatDate(movements[0].fecha) : '-'}`, margin, 170);
-      
-      // Tabla de movimientos
-      doc.setFontSize(14);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Detalle de Movimientos:', margin, 190);
+             // Título principal
+       doc.setFontSize(20);
+       doc.setFont('helvetica', 'bold');
+       doc.text('Historial de Movimientos', pageWidth / 2, 25, { align: 'center' });
+       
+       // Información del artículo
+       doc.setFontSize(14);
+       doc.setFont('helvetica', 'bold');
+       doc.text('Información del Artículo:', margin, 40);
+       
+       doc.setFontSize(12);
+       doc.setFont('helvetica', 'normal');
+       doc.text(`Código: ${article.codigo}`, margin, 52);
+       doc.text(`Nombre: ${article.nombre}`, margin, 60);
+       doc.text(`Categoría: ${categoryName}`, margin, 68);
+       doc.text(`Stock Actual: ${article.stock}`, margin, 76);
+       doc.text(`Unidad: ${article.unidad}`, margin, 84);
+       
+       // Resumen estadístico
+       doc.setFontSize(14);
+       doc.setFont('helvetica', 'bold');
+       doc.text('Resumen del Historial:', margin, 96);
+       
+       doc.setFontSize(12);
+       doc.setFont('helvetica', 'normal');
+       doc.text(`Total Movimientos: ${movements.length}`, margin, 106);
+       doc.text(`Entradas: ${movements.filter(m => m.accion === 'ENTRADA').length}`, margin, 114);
+       doc.text(`Salidas: ${movements.filter(m => m.accion === 'SALIDA').length}`, margin, 122);
+       doc.text(`Último Movimiento: ${movements.length > 0 ? formatDate(movements[0].fecha) : '-'}`, margin, 130);
+       
+       // Tabla de movimientos
+       doc.setFontSize(14);
+       doc.setFont('helvetica', 'bold');
+       doc.text('Detalle de Movimientos:', margin, 142);
       
              // Generar tabla manualmente con bordes
-       let currentY = 200;
-       const lineHeight = 8;
-       const colWidths = [35, 20, 25, 25, 30, 35];
-       const totalTableWidth = colWidths.reduce((a, b) => a + b, 0);
-       
-       // Encabezados con borde
-       doc.setFontSize(10);
-       doc.setFont('helvetica', 'bold');
-       doc.setFillColor(59, 130, 246);
-       doc.rect(margin, currentY - 5, totalTableWidth, lineHeight + 2, 'F');
-       
-       // Dibujar bordes verticales para encabezados
-       let currentX = margin;
-       doc.setDrawColor(59, 130, 246);
-       doc.setLineWidth(0.5);
-       
-       // Borde izquierdo
-       doc.line(margin, currentY - 5, margin, currentY + lineHeight - 3);
-       
-       doc.setTextColor(255, 255, 255);
-       doc.text('Fecha', currentX + 2, currentY);
-       currentX += colWidths[0];
-       doc.line(currentX, currentY - 5, currentX, currentY + lineHeight - 3);
-       doc.text('Tipo', currentX + 2, currentY);
-       currentX += colWidths[1];
-       doc.line(currentX, currentY - 5, currentX, currentY + lineHeight - 3);
-       doc.text('Cantidad', currentX + 2, currentY);
-       currentX += colWidths[2];
-       doc.line(currentX, currentY - 5, currentX, currentY + lineHeight - 3);
-       doc.text('Costo (S/)', currentX + 2, currentY);
-       currentX += colWidths[3];
-       doc.line(currentX, currentY - 5, currentX, currentY + lineHeight - 3);
-       doc.text('Doc', currentX + 2, currentY);
-       currentX += colWidths[4];
-       doc.line(currentX, currentY - 5, currentX, currentY + lineHeight - 3);
-       doc.text('Detalle', currentX + 2, currentY);
-       doc.line(margin + totalTableWidth, currentY - 5, margin + totalTableWidth, currentY + lineHeight - 3); 
-       currentY += lineHeight + 5;
-       doc.setTextColor(0, 0, 0);
-       movements.forEach((movement) => {
-         if (currentY > 270) {
-           doc.addPage();
-           currentY = 20;
-         }
-         doc.setDrawColor(200, 200, 200);
-         doc.setLineWidth(0.2);
-         doc.line(margin, currentY - 3, margin + totalTableWidth, currentY - 3);
-         let currentX = margin;
-         doc.line(currentX, currentY - 3, currentX, currentY + lineHeight - 1);
+       let currentY = 150;
+      const baseLineHeight = 8;
+      const colWidths = [35, 20, 25, 25, 30, 35];
+      const totalTableWidth = colWidths.reduce((a, b) => a + b, 0);
+      
+      // Encabezados con borde
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.setFillColor(59, 130, 246);
+      doc.rect(margin, currentY - 5, totalTableWidth, baseLineHeight + 2, 'F');
+      
+      // Dibujar bordes verticales para encabezados
+      let currentX = margin;
+      doc.setDrawColor(59, 130, 246);
+      doc.setLineWidth(0.5);
+      
+      // Borde izquierdo
+      doc.line(margin, currentY - 5, margin, currentY + baseLineHeight - 3);
+      
+      doc.setTextColor(255, 255, 255);
+      doc.text('Fecha', currentX + 2, currentY);
+      currentX += colWidths[0];
+      doc.line(currentX, currentY - 5, currentX, currentY + baseLineHeight - 3);
+      doc.text('Tipo', currentX + 2, currentY);
+      currentX += colWidths[1];
+      doc.line(currentX, currentY - 5, currentX, currentY + baseLineHeight - 3);
+      doc.text('Cantidad', currentX + 2, currentY);
+      currentX += colWidths[2];
+      doc.line(currentX, currentY - 5, currentX, currentY + baseLineHeight - 3);
+      doc.text('Costo (S/)', currentX + 2, currentY);
+      currentX += colWidths[3];
+      doc.line(currentX, currentY - 5, currentX, currentY + baseLineHeight - 3);
+      doc.text('Doc', currentX + 2, currentY);
+      currentX += colWidths[4];
+      doc.line(currentX, currentY - 5, currentX, currentY + baseLineHeight - 3);
+      doc.text('Detalle', currentX + 2, currentY);
+      doc.line(margin + totalTableWidth, currentY - 5, margin + totalTableWidth, currentY + baseLineHeight - 3); 
+      currentY += baseLineHeight + 5;
+      doc.setTextColor(0, 0, 0);
+      
+      movements.forEach((movement) => {
+        if (currentY > 270) {
+          doc.addPage();
+          currentY = 20;
+        }
+        
+                 // Calcular altura de fila basada en el contenido del detalle
+         const detalleText = movement.detalle || '-';
+         const maxDetalleWidth = colWidths[5] - 4; // Ancho de columna menos margen
          
+         // Dividir el texto en líneas que quepan en el ancho de la columna
+         const detalleLines = doc.splitTextToSize(detalleText, maxDetalleWidth);
+         
+         // Calcular altura exacta sin espacios extra
+         const numLines = detalleLines.length;
+         const textHeight = numLines * 4; // Altura más compacta por línea
+         
+         // La altura de la fila será la máxima entre la altura base y la altura del texto
+         const rowHeight = Math.max(baseLineHeight, textHeight + 2); // +2 para padding mínimo
+        
+        doc.setDrawColor(200, 200, 200);
+        doc.setLineWidth(0.2);
+        
+        // Borde superior de la fila
+        doc.line(margin, currentY - 3, margin + totalTableWidth, currentY - 3);
+        
+        let currentX = margin;
+        
+                 // Calcular posición Y centrada para todas las columnas
+         const centeredY = currentY - 3 + (rowHeight / 2) + 1; // Centrado vertical en la fila
+         
+         // Fecha
+         doc.line(currentX, currentY - 3, currentX, currentY + rowHeight - 1);
          doc.setFontSize(8);
          doc.setFont('helvetica', 'normal');
-         
-         doc.text(formatDate(movement.fecha), currentX + 2, currentY);
+         doc.text(formatDate(movement.fecha), currentX + 2, centeredY);
          currentX += colWidths[0];
-         doc.line(currentX, currentY - 3, currentX, currentY + lineHeight - 1);
-         doc.text(movement.accion, currentX + 2, currentY);
+         
+         // Tipo
+         doc.line(currentX, currentY - 3, currentX, currentY + rowHeight - 1);
+         
+         // Aplicar color según el tipo de movimiento
+         if (movement.accion === 'ENTRADA') {
+           doc.setTextColor(34, 197, 94); // Verde
+         } else if (movement.accion === 'SALIDA') {
+           doc.setTextColor(239, 68, 68); // Rojo
+         } else {
+           doc.setTextColor(0, 0, 0); // Negro por defecto
+         }
+         
+         doc.text(movement.accion, currentX + 2, centeredY);
+         
+         // Restaurar color negro para las demás columnas
+         doc.setTextColor(0, 0, 0);
+         
          currentX += colWidths[1];
-         doc.line(currentX, currentY - 3, currentX, currentY + lineHeight - 1);
-         doc.text(movement.accion === 'ENTRADA' ? `+${movement.cantidad}` : `-${movement.cantidad}`, currentX + 2, currentY);
+         
+         // Cantidad
+         doc.line(currentX, currentY - 3, currentX, currentY + rowHeight - 1);
+         doc.text(movement.accion === 'ENTRADA' ? `+${movement.cantidad}` : `-${movement.cantidad}`, currentX + 2, centeredY);
          currentX += colWidths[2];
-         doc.line(currentX, currentY - 3, currentX, currentY + lineHeight - 1);
-         doc.text(movement.costo_unidad ? `S/ ${parseFloat(movement.costo_unidad).toFixed(2)}` : '-', currentX + 2, currentY);
+         
+         // Costo
+         doc.line(currentX, currentY - 3, currentX, currentY + rowHeight - 1);
+         doc.text(movement.costo_unidad ? `S/ ${parseFloat(movement.costo_unidad).toFixed(2)}` : '-', currentX + 2, centeredY);
          currentX += colWidths[3];
-         doc.line(currentX, currentY - 3, currentX, currentY + lineHeight - 1);
-         doc.text(movement.doc || '-', currentX + 2, currentY);
+         
+         // Documento
+         doc.line(currentX, currentY - 3, currentX, currentY + rowHeight - 1);
+         doc.text(movement.doc || '-', currentX + 2, centeredY);
          currentX += colWidths[4];
-         doc.line(currentX, currentY - 3, currentX, currentY + lineHeight - 1);
-         doc.text(movement.detalle || '-', currentX + 2, currentY);
+        
+                 // Detalle
+         doc.line(currentX, currentY - 3, currentX, currentY + rowHeight - 1);
          
-         // Borde derecho de la fila
-         doc.line(margin + totalTableWidth, currentY - 3, margin + totalTableWidth, currentY + lineHeight - 1);
-         
-         // Borde inferior de la fila
-         doc.line(margin, currentY + lineHeight - 1, margin + totalTableWidth, currentY + lineHeight - 1);
-         
-         currentY += lineHeight + 2;
-       });
+         // Posicionar el texto del detalle con centrado vertical perfecto
+         const paddingTop = (rowHeight - textHeight) / 2;
+         const detalleStartY = currentY - 3 + paddingTop + 4; // +4 para alinear con baseline del texto
+         doc.text(detalleLines, currentX + 2, detalleStartY);
+        
+        // Borde derecho de la fila
+        doc.line(margin + totalTableWidth, currentY - 3, margin + totalTableWidth, currentY + rowHeight - 1);
+        
+        // Borde inferior de la fila
+        doc.line(margin, currentY + rowHeight - 1, margin + totalTableWidth, currentY + rowHeight - 1);
+        
+        currentY += rowHeight + 2;
+      });
       
       // Pie de página
       doc.setFontSize(10);
