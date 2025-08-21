@@ -1,7 +1,8 @@
 {
-  "name": "frontinventario",
+  "name": "sistema-de-inventario-para-la-oficina-de-criminalistica-de-huancayo",
   "private": true,
   "version": "0.0.0",
+  "author": "Aaron Ccente Rojas",
   "type": "module",
   "scripts": {
     "dev": "vite",
