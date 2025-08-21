@@ -7,6 +7,8 @@ import CreateCategoryModal from './CreateCategoryModal.jsx';
 const Dashboard = () => {
   const { user, logout } = useAuth();
   const [categories, setCategories] = useState([]);
+  const [filteredCategories, setFilteredCategories] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -96,6 +98,10 @@ const Dashboard = () => {
     };
   }, []);
 
+  useEffect(() => {
+    setFilteredCategories(categories);
+  }, [categories]);
+
   const handleLogout = () => {
     logout();
   };
@@ -114,6 +120,25 @@ const Dashboard = () => {
 
   const handleCategoryCreated = () => {
     fetchCategories();
+  };
+
+  const filterCategories = (term) => {
+    if (!term.trim()) {
+      setFilteredCategories(categories);
+      return;
+    }
+    
+    const filtered = categories.filter(category =>
+      category.name.toLowerCase().includes(term.toLowerCase()) ||
+      category.icon.includes(term)
+    );
+    setFilteredCategories(filtered);
+  };
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    filterCategories(value);
   };
 
   if (loading) {
@@ -156,7 +181,7 @@ const Dashboard = () => {
       <div className="flex h-full">
         <aside className="w-80 bg-white dark:bg-gray-800 shadow-xl min-h-screen flex-shrink-0">
           <div className="p-8">
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
                 Categorías
               </h2>
@@ -170,46 +195,95 @@ const Dashboard = () => {
                 </svg>
               </button>
             </div>
+
+            {/* Buscador de categorías */}
+            <div className="mb-6">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Buscar categorías..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  className="w-full px-4 py-3 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100 transition-all duration-200"
+                />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                {searchTerm && (
+                  <button
+                    onClick={() => {
+                      setSearchTerm('');
+                      setFilteredCategories(categories);
+                    }}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            </div>
             
             <nav className="space-y-3">
-              {categories.map((category) => (
-                <div
-                  key={category.id}
-                  className={`flex items-center justify-between p-4 rounded-xl transition-all duration-300 group ${
-                    isCategorySelected(category.slug)
-                      ? 'bg-pink-100 dark:bg-pink-900/30 border-l-4 border-pink-500 dark:border-pink-400 shadow-md'
-                      : 'hover:bg-pink-50 dark:hover:bg-gray-700 hover:shadow-md'
-                  }`}
-                >
-                  <div 
-                    className="flex items-center space-x-4 flex-1 cursor-pointer"
-                    onClick={() => handleCategoryClick(category.slug)}
+              {filteredCategories.length > 0 ? (
+                filteredCategories.map((category) => (
+                  <div
+                    key={category.id}
+                    className={`flex items-center justify-between p-4 rounded-xl transition-all duration-300 group ${
+                      isCategorySelected(category.slug)
+                        ? 'bg-pink-100 dark:bg-pink-900/30 border-l-4 border-pink-500 dark:border-pink-400 shadow-md'
+                        : 'hover:bg-pink-50 dark:hover:bg-gray-700 hover:shadow-md'
+                    }`}
                   >
-                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center transition-colors ${
-                      isCategorySelected(category.slug)
-                        ? 'bg-pink-200 dark:bg-pink-800'
-                        : 'bg-gray-100 dark:bg-gray-600'
-                    }`}>
-                      <span className="text-2xl">{category.icon}</span>
+                    <div 
+                      className="flex items-center space-x-4 flex-1 cursor-pointer"
+                      onClick={() => handleCategoryClick(category.slug)}
+                    >
+                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center transition-colors ${
+                        isCategorySelected(category.slug)
+                          ? 'bg-pink-200 dark:bg-pink-800'
+                          : 'bg-gray-100 dark:bg-gray-600'
+                      }`}>
+                        <span className="text-2xl">{category.icon}</span>
+                      </div>
+                      <span className={`font-semibold text-lg transition-colors ${
+                        isCategorySelected(category.slug)
+                          ? 'text-pink-700 dark:text-pink-300'
+                          : 'text-gray-700 dark:text-gray-300 group-hover:text-pink-600 dark:group-hover:text-pink-400'
+                      }`}>
+                        {category.name}
+                      </span>
                     </div>
-                    <span className={`font-semibold text-lg transition-colors ${
+                    
+                    <span className={`text-sm font-bold px-3 py-1 rounded-full transition-colors ${
                       isCategorySelected(category.slug)
-                        ? 'text-pink-700 dark:text-pink-300'
-                        : 'text-gray-700 dark:text-gray-300 group-hover:text-pink-600 dark:group-hover:text-pink-400'
+                        ? 'bg-pink-200 text-pink-800 dark:bg-pink-800 dark:text-pink-200'
+                        : 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300'
                     }`}>
-                      {category.name}
+                      {category.count}
                     </span>
                   </div>
-                  
-                                     <span className={`text-sm font-bold px-3 py-1 rounded-full transition-colors ${
-                     isCategorySelected(category.slug)
-                       ? 'bg-pink-200 text-pink-800 dark:bg-pink-800 dark:text-pink-200'
-                       : 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300'
-                   }`}>
-                     {category.count}
-                   </span>
+                ))
+              ) : searchTerm ? (
+                <div className="text-center py-8">
+                  <div className="text-4xl mb-3">🔍</div>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    No se encontraron categorías que coincidan con "{searchTerm}"
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSearchTerm('');
+                      setFilteredCategories(categories);
+                    }}
+                    className="mt-3 text-pink-500 hover:text-pink-600 dark:text-pink-400 dark:hover:text-pink-300 text-sm font-medium"
+                  >
+                    Limpiar búsqueda
+                  </button>
                 </div>
-              ))}
+              ) : null}
             </nav>
 
             <div className="mt-10 pt-8 border-t border-gray-200 dark:border-gray-700">
