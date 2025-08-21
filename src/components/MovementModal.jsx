@@ -279,7 +279,7 @@ const MovementModal = ({ isOpen, onClose, onMovementCreated, article, categoryNa
                    <div>
                      <span className="text-blue-700 dark:text-blue-300">Costo Total:</span>
                      <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">
-                       ${(parseFloat(formData.cantidad || 0) * parseFloat(formData.costo_unidad || 0)).toFixed(2)}
+                       S/.{(parseFloat(formData.cantidad || 0) * parseFloat(formData.costo_unidad || 0)).toFixed(2)}
                      </span>
                    </div>
                  )}
