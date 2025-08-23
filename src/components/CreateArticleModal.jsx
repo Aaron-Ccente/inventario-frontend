@@ -13,6 +13,8 @@ const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, cat
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [duplicateArticles, setDuplicateArticles] = useState([]);
+  const [showDuplicates, setShowDuplicates] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -33,6 +35,8 @@ const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, cat
     setLoading(true);
     setError('');
     setSuccess('');
+    setDuplicateArticles([]);
+    setShowDuplicates(false);
 
     try {
       const articleData = {
@@ -71,7 +75,26 @@ const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, cat
           onClose();
         }, 1000);
       } else {
-        setError(data.message || 'Error al crear el artículo');
+        // Si es un error de duplicación por nombre, buscar información detallada
+        if (data.message && data.message.includes('Ya existe un artículo con ese nombre')) {
+          try {
+            const duplicateResponse = await fetch(`http://localhost:8081/api/article/duplicados/${encodeURIComponent(formData.nombre)}`);
+            const duplicateData = await duplicateResponse.json();
+            
+            if (duplicateData.success && duplicateData.data.length > 0) {
+              setDuplicateArticles(duplicateData.data);
+              setShowDuplicates(true);
+              setError(`Ya existe un artículo con el nombre "${formData.nombre}". Revisa la información a continuación:`);
+            } else {
+              setError(data.message || 'Error al crear el artículo');
+            }
+          } catch (duplicateErr) {
+            console.log(duplicateErr)
+            setError(data.message || 'Error al crear el artículo');
+          }
+        } else {
+          setError(data.message || 'Error al crear el artículo');
+        }
       }
     } catch (err) {
       console.log(err)
@@ -94,6 +117,8 @@ const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, cat
       });
       setError('');
       setSuccess('');
+      setDuplicateArticles([]);
+      setShowDuplicates(false);
       onClose();
     }
   };
@@ -240,6 +265,33 @@ const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, cat
           {error && (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
               <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+            </div>
+          )}
+
+          {showDuplicates && duplicateArticles.length > 0 && (
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+              <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-3">
+                Artículos existentes con el mismo nombre:
+              </h4>
+              <div className="space-y-2">
+                {duplicateArticles.map((article, index) => (
+                  <div key={index} className="flex items-center space-x-3 p-2 bg-blue-100 dark:bg-blue-800/30 rounded">
+                    <div className="flex-shrink-0">
+                      <span className="text-blue-600 dark:text-blue-300 text-lg">
+                        {article.categoria_icono || '📦'}
+                      </span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-blue-800 dark:text-blue-200 text-sm font-medium">
+                        Categoría: <span className="text-blue-600 dark:text-blue-300">{article.categoria_nombre}</span>
+                      </p>
+                      <p className="text-blue-700 dark:text-blue-300 text-sm">
+                        Código: <span className="text-blue-600 dark:text-blue-300 font-mono">{article.codigo}</span>
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
