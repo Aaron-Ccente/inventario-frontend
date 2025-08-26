@@ -24,64 +24,19 @@ const Dashboard = () => {
           const transformed = {
             id: cat.id_categoria,
             name: cat.nombre,
-            icon: cat.icono || getCategoryIcon(cat.nombre),
+            icon: cat.icono,
             count: cat.total_articulos || 0,
             slug: cat.nombre.toLowerCase().replace(/\s+/g, '-')
           };
           return transformed;
         });
         setCategories(transformedCategories);
-      } else {
-        setDefaultCategories();
       }
     } catch (error) {
       console.log(error)
-      setDefaultCategories();
     } finally {
       setLoading(false);
     }
-  };
-
-  const setDefaultCategories = () => {
-    const defaultCategories = [
-      { id: 1, name: 'Herramientas', icon: '🔧', count: 25, slug: 'herramientas' },
-      { id: 2, name: 'Materiales', icon: '📦', count: 42, slug: 'materiales' },
-      { id: 3, name: 'Equipos', icon: '💻', count: 18, slug: 'equipos' },
-      { id: 4, name: 'Consumibles', icon: '🧪', count: 67, slug: 'consumibles' },
-      { id: 5, name: 'Vehículos', icon: '🚗', count: 12, slug: 'vehiculos' },
-      { id: 6, name: 'Armamento', icon: '🔫', count: 8, slug: 'armamento' },
-      { id: 7, name: 'Comunicaciones', icon: '📻', count: 15, slug: 'comunicaciones' },
-      { id: 8, name: 'Seguridad', icon: '🛡️', count: 23, slug: 'seguridad' }
-    ];
-    setCategories(defaultCategories);
-  };
-
-  const getCategoryIcon = (categoryName) => {
-    const iconMap = {
-      'herramientas': '🔧',
-      'materiales': '📦',
-      'equipos': '💻',
-      'consumibles': '🧪',
-      'vehículos': '🚗',
-      'armamento': '🔫',
-      'comunicaciones': '📻',
-      'seguridad': '🛡️',
-      'equipos de comunicación': '📡',
-      'tecnología': '💻',
-      'logística': '🚚',
-      'medicina': '🏥',
-      'ropa': '👕',
-      'alimentación': '🍽️'
-    };
-    
-    const lowerName = categoryName.toLowerCase();
-    for (const [key, icon] of Object.entries(iconMap)) {
-      if (lowerName.includes(key)) {
-        return icon;
-      }
-    }
-    
-    return '📋';
   };
 
   useEffect(() => {

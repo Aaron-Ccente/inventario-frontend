@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { icons } from '../assets/icons';
 
 const EditCategoryModal = ({ isOpen, onClose, onCategoryUpdated, category }) => {
   const [categoryName, setCategoryName] = useState('');
@@ -7,10 +8,6 @@ const EditCategoryModal = ({ isOpen, onClose, onCategoryUpdated, category }) => 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-
-  const availableIcons = [
-    '🔧', '📦', '💻', '🧪', '🚗', '🔫', '📻', '🛡️', '🏥', '👕', '🍽️', '🚚', '🏗️', '⚡', '🌱', '🧹', '📋', '🔨', '📱', '💡', '🔋', '📷', '🎧', '⌨️', '🖱️', '🖨️', '📺', '🎥', '🔍', '📊', '💾'
-  ];
 
   useEffect(() => {
     if (category && isOpen) {
@@ -117,7 +114,7 @@ const EditCategoryModal = ({ isOpen, onClose, onCategoryUpdated, category }) => 
               Selecciona un Icono *
             </label>
             <div className="grid grid-cols-10 gap-2 max-h-40 overflow-y-auto p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700">
-              {availableIcons.map((icon, index) => (
+              {icons.map((icon, index) => (
                 <button
                   key={index}
                   type="button"

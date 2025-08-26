@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { icons } from '../assets/icons';
 
 const CreateCategoryModal = ({ isOpen, onClose, onCategoryCreated }) => {
   const [categoryName, setCategoryName] = useState('');
@@ -7,10 +8,6 @@ const CreateCategoryModal = ({ isOpen, onClose, onCategoryCreated }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-
-  const availableIcons = [
-    '🔧', '📦', '💻', '🧪', '🚗', '🔫', '📻', '🛡️', '🏥', '👕', '🍽️', '🚚', '🏗️', '⚡', '🌱', '🧹', '📋', '🔨', '📱', '💡', '🔋', '📷', '🎧', '⌨️', '🖱️', '🖨️', '📺', '🎥', '🔍', '📊', '💾'
-  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -114,7 +111,7 @@ const CreateCategoryModal = ({ isOpen, onClose, onCategoryCreated }) => {
               Selecciona un Icono *
             </label>
             <div className="grid grid-cols-10 gap-2 max-h-40 overflow-y-auto p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700">
-              {availableIcons.map((icon, index) => (
+              {icons.map((icon, index) => (
                 <button
                   key={index}
                   type="button"
