@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle.jsx';
 import CreateCategoryModal from './CreateCategoryModal.jsx';
+import DownloadGeneralReportButton from './DownloadGeneralReportButton.jsx';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
@@ -13,6 +14,24 @@ const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const [articulos, setArticulos] = useState([]);
+
+  const fetchDatosGenerales = async () => {
+    try {
+      const response = await fetch('http://localhost:8081/api/reporte/general');
+      const data = await response.json();
+      
+      if (data.success) {
+        setArticulos(data.data);
+      }
+    } catch (error) {
+      console.error('Error cargando datos:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDatosGenerales();
+  }, []);
 
     const fetchCategories = async () => {
     try {
@@ -77,130 +96,6 @@ const Dashboard = () => {
     fetchCategories();
   };
 
-  const handleDownloadReport = async (event) => {
-    let button = null;
-    let originalText = '';
-    
-    try {
-      // indicador de carga
-      button = event.target.closest('button');
-      originalText = button.innerHTML;
-      button.innerHTML = `
-        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        Generando PDF...
-      `;
-      button.disabled = true;
-
-      const response = await fetch('http://localhost:8081/api/reporte/general', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/pdf',
-        },
-      });
-
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'informe_general_articulos.pdf';
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-        const toast = document.createElement('div');
-        toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full';
-        toast.innerHTML = `
-          <div class="flex items-center space-x-3">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <span class="font-semibold">¡Éxito!</span>
-          </div>
-          <p class="mt-2">El informe PDF ha sido generado y descargado correctamente.</p>
-        `;
-        document.body.appendChild(toast);
-        setTimeout(() => {
-          toast.classList.remove('translate-x-full');
-        }, 100);
-        setTimeout(() => {
-          toast.classList.add('translate-x-full');
-          setTimeout(() => {
-            if (toast.parentNode) {
-              document.body.removeChild(toast);
-            }
-          }, 300);
-        }, 4000);
-      } else {
-        console.error('Error al generar el reporte:', response.status, response.statusText);
-        let errorMessage = 'Error desconocido';
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || 'Error desconocido';
-        } catch (parseError) {
-          console.log(parseError)
-          errorMessage = `Error ${response.status}: ${response.statusText}`;
-        }
-        const errorToast = document.createElement('div');
-        errorToast.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full';
-        errorToast.innerHTML = `
-          <div class="flex items-center space-x-3">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <span class="font-semibold">Error</span>
-          </div>
-          <p class="mt-2">${errorMessage}</p>
-        `;
-        document.body.appendChild(errorToast);
-        setTimeout(() => {
-          errorToast.classList.remove('translate-x-full');
-        }, 100);
-        
-        setTimeout(() => {
-          errorToast.classList.add('translate-x-full');
-          setTimeout(() => {
-            if (errorToast.parentNode) {
-              document.body.removeChild(errorToast);
-            }
-          }, 300);
-        }, 4000);
-      }
-    } catch (error) {
-      console.error('Error al descargar el reporte:', error);
-      const errorToast = document.createElement('div');
-      errorToast.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full';
-      errorToast.innerHTML = `
-        <div class="flex items-center space-x-3">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <span class="font-semibold">Error</span>
-        </div>
-        <p class="mt-2">Error al descargar el reporte. Por favor, inténtalo de nuevo.</p>
-      `;
-      document.body.appendChild(errorToast);
-      setTimeout(() => {
-        errorToast.classList.remove('translate-x-full');
-      }, 100);
-      setTimeout(() => {
-        errorToast.classList.add('translate-x-full');
-        setTimeout(() => {
-          if (errorToast.parentNode) {
-            document.body.removeChild(errorToast);
-          }
-        }, 300);
-      }, 4000);
-    } finally {
-      if (button && originalText) {
-        button.innerHTML = originalText;
-        button.disabled = false;
-      }
-    }
-  };
 
   const filterCategories = (term) => {
     if (!term.trim()) {
@@ -383,15 +278,7 @@ const Dashboard = () => {
                     {categories.length}
                   </span>
                 </div>
-                <button
-                  onClick={handleDownloadReport}
-                  className="w-full bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700 text-white px-4 py-3 rounded-lg transition-all duration-300 hover:shadow-lg flex items-center justify-center space-x-2"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <span>Descargar historial general</span>
-                </button>
+                 <DownloadGeneralReportButton data={articulos} />
               </div>
             </div>
           </div>
