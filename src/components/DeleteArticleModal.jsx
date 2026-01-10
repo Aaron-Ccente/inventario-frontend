@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../config/api';
 
 const DeleteArticleModal = ({ isOpen, onClose, onArticleDeleted, article, categoryName }) => {
   const [loading, setLoading] = useState(false);
@@ -11,7 +12,7 @@ const DeleteArticleModal = ({ isOpen, onClose, onArticleDeleted, article, catego
     setSuccess('');
 
     try {
-      const response = await fetch(`http://localhost:8081/api/article/${article.id_articulo}`, {
+      const response = await fetch(`${API_BASE_URL}/article/${article.id_articulo}`, {
         method: 'DELETE',
       });
 

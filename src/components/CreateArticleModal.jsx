@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../config/api';
 
 const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, categoryName }) => {
   const [formData, setFormData] = useState({
@@ -48,7 +49,7 @@ const CreateArticleModal = ({ isOpen, onClose, onArticleCreated, categoryId, cat
         articleData.fecha_vencimiento = null;
       }
       
-      const response = await fetch('http://localhost:8081/api/article', {
+      const response = await fetch(`${API_BASE_URL}/article`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

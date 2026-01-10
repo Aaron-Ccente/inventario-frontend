@@ -7,6 +7,7 @@ import EditArticleModal from './EditArticleModal.jsx';
 import DeleteArticleModal from './DeleteArticleModal.jsx';
 import MovementModal from './MovementModal.jsx';
 import MovementHistoryModal from './MovementHistoryModal.jsx';
+import { API_BASE_URL } from '../config/api.js';
 
 const CategoryView = () => {
   const { categorySlug } = useParams();
@@ -26,7 +27,7 @@ const CategoryView = () => {
 
   const fetchCategoryData = async (categorySlug) => {
     try {
-      const response = await fetch('http://localhost:8081/api/category');
+      const response = await fetch(`${API_BASE_URL}/category`);
       const data = await response.json();
       
       if (data.success) {
@@ -152,7 +153,7 @@ const CategoryView = () => {
 
   const fetchArticles = async (categoryId) => {
     try {
-      const response = await fetch(`http://localhost:8081/api/article/categoria/${categoryId}`);
+      const response = await fetch(`${API_BASE_URL}/article/categoria/${categoryId}`);
       const data = await response.json();
       
       if (data.success) {

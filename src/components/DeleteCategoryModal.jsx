@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../config/api';
 
 const DeleteCategoryModal = ({ isOpen, onClose, onCategoryDeleted, category }) => {
   const [loading, setLoading] = useState(false);
@@ -11,7 +12,7 @@ const DeleteCategoryModal = ({ isOpen, onClose, onCategoryDeleted, category }) =
     setSuccess('');
 
     try {
-      const response = await fetch(`http://localhost:8081/api/category/${category.id}`, {
+      const response = await fetch(`${API_BASE_URL}/category/${category.id}`, {
         method: 'DELETE',
       });
 

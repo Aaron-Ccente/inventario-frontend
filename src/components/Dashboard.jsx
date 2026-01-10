@@ -4,6 +4,7 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle.jsx';
 import CreateCategoryModal from './CreateCategoryModal.jsx';
 import DownloadGeneralReportButton from './DownloadGeneralReportButton.jsx';
+import { API_BASE_URL } from '../config/api.js';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
@@ -18,7 +19,7 @@ const Dashboard = () => {
 
   const fetchDatosGenerales = async () => {
     try {
-      const response = await fetch('http://localhost:8081/api/reporte/general');
+      const response = await fetch(`${API_BASE_URL}/reporte/general`);
       const data = await response.json();
       
       if (data.success) {
@@ -35,7 +36,7 @@ const Dashboard = () => {
 
     const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:8081/api/category');
+      const response = await fetch(`${API_BASE_URL}/category`);
       const data = await response.json();
       
       if (data.success) {
