@@ -134,7 +134,7 @@ const Dashboard = () => {
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                Sistema de Inventario PNP
+                Sistema de Inventario
               </h1>
             </div>
             <div className="flex items-center space-x-6">
