@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
+import { API_BASE_URL } from '../config/api';
 
 const MovementHistoryModal = ({ isOpen, onClose, article, categoryName }) => {
   const [movements, setMovements] = useState([]);
@@ -17,7 +18,7 @@ const MovementHistoryModal = ({ isOpen, onClose, article, categoryName }) => {
     setError('');
 
     try {
-      const response = await fetch(`http://localhost:8081/api/movement/articulo/${article.id_articulo}`);
+      const response = await fetch(`${API_BASE_URL}/movement/articulo/${article.id_articulo}`);
       const data = await response.json();
 
               if (data.success) {

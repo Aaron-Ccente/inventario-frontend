@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config/api';
 
 const EditArticleModal = ({ isOpen, onClose, onArticleUpdated, article, categoryName }) => {
   const [formData, setFormData] = useState({
@@ -61,7 +62,7 @@ const EditArticleModal = ({ isOpen, onClose, onArticleUpdated, article, category
         stock: parseFloat(formData.stock) || 0
       };
       
-      const response = await fetch(`http://localhost:8081/api/article/${article.id_articulo}`, {
+      const response = await fetch(`${API_BASE_URL}/article/${article.id_articulo}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

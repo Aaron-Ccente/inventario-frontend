@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config/api';
 
 const MovementModal = ({ isOpen, onClose, onMovementCreated, article, categoryName }) => {
   const [formData, setFormData] = useState({
@@ -65,7 +66,7 @@ const MovementModal = ({ isOpen, onClose, onMovementCreated, article, categoryNa
     setSuccess('');
 
     try {
-        const response = await fetch('http://localhost:8081/api/movement', {
+        const response = await fetch(`${API_BASE_URL}/movement`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
